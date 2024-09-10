@@ -1,0 +1,68 @@
+show databases;
+use davidk;
+
+select * from cars;
+select id, model from cars;
+# ------------------------------------------ Selecting data from DB
+select * from users where name = 'oleg';
+select * from users where name != 'oleg';
+
+select * from users where name like 'o%';
+select * from users where name like '%o%';
+select * from users where name like '%a';
+select * from users where name like '__e%';
+
+select * from users where age = 30;
+select * from users where age != 30;
+select * from users where age between 20 and 30;
+select * from users where age not between 20 and 30;
+select * from users where age >= 20 and age <= 30;
+select * from users where age >= 20 and age <= 30 and gender = 'male' or age = 33;
+select * from users where age in (25, 33, 36, 18, 16);
+select * from users where age not in (25, 33, 36, 18, 16);
+
+select * from users where length(name) = 4;
+#------------------------------------------ Sorting via "order by"
+select * from users order by id;
+select * from users where age > 20 order by id;
+select * from users order by age, name desc;
+#------------------------------------------ Selecting data from DB, BUT LIMITED AMOUNT
+select * from users limit 5;
+select * from users limit 5 offset 5;
+
+#------------------------------------------ FUNCTIONS
+# max();
+# min();
+# avg();
+# count();
+# sum();
+
+select min(age) as minAge from users;
+select max(age) as maxAge from users;
+select avg(age) as averageAge from users;
+select sum(age) as sumAge from users;
+select count(*) as conuntedAge from users where age>20;
+#------------------------------------------ Grouping data
+select min(age), gender from users where age>25 group by gender;
+select max(age), gender from users where age>25 group by gender;
+select avg(age), gender from users where age>25 group by gender;
+select count(*), gender from users where age>25 group by gender;
+#------------------------------------------------------------Grouping data, THEN adding "where = having"
+select count(*), gender from users where age>25 group by gender having count(*)>2;
+#--------------------------------------- Deleting and Creating a table (Adding, Updating, Deleting data)
+drop table users;
+
+create table users (
+    id int primary key auto_increment,
+    name varchar(255) not null,
+    age int not null
+);
+
+insert into users (name, age) values ('Alex', 27);
+
+update users set name = 'Orest' where id = 2;
+
+delete from users where id in (1, 3, 4);
+
+
+
