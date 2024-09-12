@@ -1,0 +1,58 @@
+# ---------------------------------------Selecting unique data only (via "distinct")
+select distinct name, age from users;
+# --------------------------------------- Multiple functions at once
+select avg(age), sum(age) from users;
+
+select avg(age) from users
+union
+select sum(age) from users;
+# --------------------------------------- Math operations
+select id, price, price*2 as doublePrice from cars;
+# ------------------------------------------------------ CONCAT (creating string object)
+select concat('My name is ',name, ' I`m ', age, 'gender - ',gender) as strings from users;
+# ------------------------------------------------------ Finding data in database using concat string
+select * from users where concat('My name is ',name, ' I`m ', age, 'gender - ',gender)='My name is Max I`m 16gender - male';
+# --------------------------------------Selecting by checking if symbol is after ">" or before "<" in alphabetical order
+select * from users where name < 'max';
+# -------------------------------------- Selecting data by comparing columns within a table
+select * from users where age = id+17;
+# ------------------------------ Selecting data and making it "lower" or "upper"
+select lower(name) from users;
+select upper(name) from users;
+
+# ----------------------------- Connecting (joining) two tables with one another
+select * from application
+join client  on client.idClient = application.Client_idClient
+where FirstName='Roman';
+# ------------------------Selecting specific columns (data) from a joined (connected) table INSTEAD of * (all)
+select client.*, application.CreditState from application
+join client  on client.idClient = application.Client_idClient
+where FirstName='Roman';
+# -------------------------- Connecting (joining) more than 1 table together, and selecting specific data from them (standalone letters work like a pseudonym - "as ___"
+select a.*, client.FirstName, d.DepartmentCity from client
+join lkjh.application a on client.idClient = a.Client_idClient
+join lkjh.department d on d.idDepartment = client.Department_idDepartment;
+# -------------------- Creating 2 tables that are joined (connected) via "foreign key" command
+create table cities(
+id int primary key auto_increment,
+city varchar(20) not null
+);
+
+create table users(
+id int primary key auto_increment,
+name varchar(20) not null ,
+age int not null ,
+city_id int null ,
+foreign key (city_id) references cities(id)
+);
+
+# ---------------------------------Selecting specific data from the 2 joined (connected) tables
+select users.*, c.city from users
+join cities c on c.id = users.city_id
+where city='lviv';
+# ------------------------ Regular "join" that doesn't display "null" data
+select * from users
+join cities c on c.id = users.city_id;
+#  -------------------------------------- "Left" and "Right" join displays the data prioritizing the table to the "left" or "right" of JOIN command
+select * from users left join cities as c on c.id = users.city_id;
+select * from users right join  cities as c on c.id = users.city_id;

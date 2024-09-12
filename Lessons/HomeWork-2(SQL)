@@ -1,0 +1,12 @@
+1:
+select * from client where FirstName like '_____';
+2:
+select * from department where DepartmentCity = 'Lviv';``
+3:
+select * from client where Education = 'high' order by LastName;
+4:
+select * from application order by idApplication desc limit 5;
+5:
+select * from client where LastName like '%iv' or LastName like '%iva';
+6:
+select * from client where City = 'Kyiv';
