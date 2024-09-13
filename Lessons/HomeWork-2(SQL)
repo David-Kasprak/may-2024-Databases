@@ -10,3 +10,20 @@ select * from application order by idApplication desc limit 5;
 select * from client where LastName like '%iv' or LastName like '%iva';
 6:
 select * from client where City = 'Kyiv';
+7:
+select distinct FirstName from client;
+8:
+select * from client
+join application on client.idClient = application.Client_idClient
+where Sum > 5000;
+9:
+select count(*) as NumberOfAllDepsClients from client
+join department on client.Department_idDepartment = department.idDepartment;
+
+select count(*) as NumberOfLvivDepClients from client
+join department on client.Department_idDepartment = department.idDepartment
+where DepartmentCity = 'Lviv';
+10:
+???
+11:
+???
