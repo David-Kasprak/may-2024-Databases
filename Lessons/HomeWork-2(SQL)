@@ -27,3 +27,12 @@ where DepartmentCity = 'Lviv';
 ???
 11:
 ???
+12:
+select max(sum) from application;
+select min(Sum) from application;
+13:
+???
+select * from client
+join davidk.application a on client.idClient = a.Client_idClient
+where Education = 'high';
+14:
