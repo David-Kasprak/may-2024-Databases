@@ -1,38 +1,106 @@
-1:
+1: Найти всех клиентов, чье имя меньше 6 символов
 select * from client where FirstName like '_____';
-2:
-select * from department where DepartmentCity = 'Lviv';``
-3:
+OR
+select *
+from client
+where length(FirstName) < 6;
+
+2: Выбрать львовские отделения банка
+select * from department where DepartmentCity = 'Lviv';
+
+3: Выбрать клиентов с высшим образованием и по сортировать их по фамилии
 select * from client where Education = 'high' order by LastName;
-4:
+
+4: Выполнить сортировку в обратном порядке над таблицей Заявка и вывести 5 последних записи
 select * from application order by idApplication desc limit 5;
-5:
+
+5: Вывести всех клиентов, чья фамилия заканчивается на OV или OVA
 select * from client where LastName like '%iv' or LastName like '%iva';
-6:
-select * from client where City = 'Kyiv';
-7:
+
+6: Вывести клиентов банка, которые обслуживаются киевскими отделениями
+select client.idClient, client.FirstName, client.LastName, department.DepartmentCity
+from client
+join department on idDepartment = Department_idDepartment
+where DepartmentCity = 'Kyiv';
+
+7: Найти все имена клиентов без повторов
 select distinct FirstName from client;
-8:
-select * from client
+
+8: Вывести данные про клиентов, которые имеют кредиты больше чем 5000 гривен
+select distinct client.*
+from client
 join application on client.idClient = application.Client_idClient
 where Sum > 5000;
-9:
-select count(*) as NumberOfAllDepsClients from client
+
+9: Посчитать количество клиентов всех отделений и только львовских отделений
+select count(*) as NumberOfAllDepsClients
+from client
 join department on client.Department_idDepartment = department.idDepartment;
 
 select count(*) as NumberOfLvivDepClients from client
 join department on client.Department_idDepartment = department.idDepartment
 where DepartmentCity = 'Lviv';
-10:
-???
-11:
-???
-12:
+
+OR
+
+select (select count(*)
+        from client
+                 join department d on d.idDepartment = client.Department_idDepartment) as all_count,
+       (select count(*)
+        from client
+                 join department d on d.idDepartment = client.Department_idDepartment
+        where DepartmentCity = 'lviv') as lviv_count;
+
+10: Найти кредиты, которые имеют самую большую сумму для каждого клиента отдельно
+select max(Sum) as max_credit, client.*
+from client
+join davidk.application a on client.idClient = a.Client_idClient
+group by idClient;
+
+11: Посчитать количество заявок на кредит для каждого клиента
+select count(*), client.idClient, client.FirstName, client.LastName
+from client
+join application on client.idClient = application.Client_idClient
+group by idClient;
+
+12: Найти наибольший и наименьший кредиты
 select max(sum) from application;
 select min(Sum) from application;
-13:
-???
-select * from client
-join davidk.application a on client.idClient = a.Client_idClient
-where Education = 'high';
-14:
+
+OR
+
+select min(Sum) as min, max(Sum) as max
+from application;
+
+13: Подсчитать количество кредитов для клиентов, которые имеют высшее образование
+select count(*) as totalApplications, idClient, FirstName, LastName
+from client
+join application on client.idClient = application.Client_idClient
+where client.Education = 'high'
+group by idClient;
+
+14: Вывести данные про клиента, у которого наибольшая средняя сумма кредитов
+select avg(application.Sum) as AvgSum, count(*), client.*
+from application
+join client on application.Client_idClient = client.idClient
+group by idClient
+order by AvgSum desc
+limit 1;
+
+15: Вывести отделение, которое выдало в кредити больше всего денег
+select sum(application.Sum) as TotalAmountOfMoney, department.*
+from department
+join client on department.idDepartment = client.Department_idDepartment
+join application on client.idClient = application.Client_idClient
+group by idDepartment
+order by TotalAmountOfMoney desc
+limit 1;
+
+16: Вывести отделение, которое выдало самый большой кредит
+select max(application.Sum) as MaxAmount, department.*
+from department
+join client on department.idDepartment = client.Department_idDepartment
+join application on client.idClient = application.Client_idClient
+group by idDepartment
+order by MaxAmount desc
+limit 1;

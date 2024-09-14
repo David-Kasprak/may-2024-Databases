@@ -1,58 +1,54 @@
                                             HOMEWORK-1 (Task part 1)
-1:
+1: # найти все машины старше 2000 г
 select * from cars where year>2000;
-2:
+
+2: # найти все машины младше 2015 г
 select * from cars where year<2015;
-3:
+
+3: # найти все машины 2008, 2009, 2010 годов
 select * from cars where year in (2008, 2009, 2010);
-4:
+
+4: # найти все машины не с этих годов 2008, 2009, 2010 годов
 select * from cars where year not in (2008, 2009, 2010);
-5:
+
+5: # найти все машины год которых совпадает с ценой
 select * from cars where year=price;
 
 
 
-6:
+6: # найти все машины bmw старше 2014 года
 select * from cars where model = 'bmw' and year > 2014;
-7:
+
+7:# найти все машины audi младше 2014 года
 select * from cars where model = 'audi' and year < 2014;
-8:
+
+8: # найти первые 5 машин
 select * from cars order by id limit 5;
-9:
+
+9: # найти последнии 5 машин
 select * from cars order by id desc limit 5;
 
 
 
-10:
+10: # найти среднее арифметическое цен машин модели KIA
 select avg(cars.price) as AvgPriceForKIA from cars where model = 'kia';
-11:
+
+11: # найти среднее арифметическое цен каждой машины
 select avg(cars.price) as AvgPriceForAll from cars;
-12:
+
+12: # посчитать количество каждой марки машин
 select count(*), cars.model from cars group by model;
-13:
+
+13: # найти марку машины количество которых больше всего
 select count(*) as NumbOfItems, cars.model from cars group by model order by NumbOfItems desc limit 1;
 
 
 
-14:
+14: # найти все машины в модели которых вторая и предпоследняя буква "а"
 select * from cars where model like '_a%a_';
-15:
+
+15:# найти все машины модели которых больше 8 символов
 select * from cars where model like '________';
 
-
-
-16:
-???
-                                            (Task part 2)
-1:
-select * from client where FirstName like '_____';
-2:
-select * from department where DepartmentCity = 'Lviv';
-3:
-select * from client where Education = 'high' order by LastName;
-4:
-select * from application order by idApplication desc limit 5;
-5:
-select * from client where LastName like '%iv' or LastName like '%iva';
-6:
-select * from client where City = 'Kyiv';
+16: # ***найти машины цена которых больше чем цена среднего арифметического всех машин
+select * from cars where price > (select avg(price) from cars)
