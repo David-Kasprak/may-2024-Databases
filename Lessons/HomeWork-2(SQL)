@@ -104,3 +104,52 @@ join application on client.idClient = application.Client_idClient
 group by idDepartment
 order by MaxAmount desc
 limit 1;
+
+17: Все клиентам, которые имею высшее образование, установить все их кредити в размене 6000грн
+update application
+join client on application.Client_idClient = client.idClient
+set Sum = 6000
+where Education = 'high';
+---SHOW THE RESULT---
+select * from application
+join client on application.Client_idClient = client.idClient;
+
+18: Всех клиентов киевских отделений пересилить в Киев
+update client
+join department on client.Department_idDepartment = department.idDepartment
+set City = 'Kyiv'
+where DepartmentCity = 'Kyiv';
+---SHOW THE RESULT---
+select * from client
+join department on client.Department_idDepartment = department.idDepartment;
+
+19: Удалить все возвращенные кредити
+delete application
+from application
+where CreditState = 'Returned';
+---SHOW THE RESULT---
+select * from application;
+
+20: Удалить кредити клиентов, у которых вторая буква фамилии гласная
+delete application
+from application
+join client on application.Client_idClient = client.idClient
+where
+        LastName like '_e%' or
+        LastName like '_y%' or
+        LastName like '_u%' or
+        LastName like '_o%' or
+        LastName like '_a%';
+
+OR
+
+delete application
+from application
+         join client c on c.idClient = application.Client_idClient
+where LastName regexp '^.[eyuoa].*';
+
+---SHOW THE RESULT---
+select * from application
+join  client on application.Client_idClient = client.idClient;
+
+21: Найти львовские отделения, которые выдали кредитов на общую сумму больше чем 5000
