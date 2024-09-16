@@ -153,3 +153,57 @@ select * from application
 join  client on application.Client_idClient = client.idClient;
 
 21: Найти львовские отделения, которые выдали кредитов на общую сумму больше чем 5000
+select department.*, sum(Sum) as Sum
+from department
+join client on department.idDepartment = client.Department_idDepartment
+join application on client.idClient = application.Client_idClient
+where DepartmentCity = 'Lviv'
+group by idDepartment
+having Sum > 5000
+order by Sum desc;
+
+22: Найти клиентов, которые погасили кредиты на сумму больше чем 5000
+select idClient, FirstName, LastName, CreditState, Sum
+from client
+join application on client.idClient = application.Client_idClient
+where CreditState = 'Returned'
+and Sum > 5000;
+
+23: Найти наибольший невозвращенный кредит
+select *
+from application
+where CreditState = 'Not returned'
+order by Sum desc
+limit 1;
+
+24: Найти клиента с наименьшей суммой кредита
+select client.*, Sum
+from client
+join application on client.idClient = application.Client_idClient
+order by Sum
+limit 1;
+
+25: Найти кредиты, сумма которых больше за среднее арифметическое всех кредитов
+select *
+from application
+where Sum > (select avg(Sum) as AvgApplicationSum from application);
+
+26: Найти клиентов с того же самого города, что и клиент который взял наибольшее количество кредитов
+select *
+from client
+where City =  (
+    select city
+    from client
+    join application on client.idClient = application.Client_idClient
+    group by idClient
+    order by count(*) desc
+    limit 1
+    );
+
+27: Найти город клиента с самим большим количеством кредитов
+select client.City
+from client
+join application on client.idClient = application.Client_idClient
+group by idClient
+order by count(*) desc
+limit 1;
