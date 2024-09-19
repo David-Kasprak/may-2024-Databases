@@ -1,23 +1,30 @@
 use test
 
+#------------------- Display data
 db.users.find()
 
+#------------------------------------------------ Add data into collection (table)
 db.users.insertOne({carModel:'BMW', year:200})
 
+#----------------------------------------------- Search by "id"
 db.users.find({_id:ObjectId('66e8610553f9506ecef59b44')})
 
+#------------------- Toggle on and of what key of an object are displayed via "1/0 = true/false"
 // db.users.find(
 //     {gender:'female', rating:4},
 //     // {_id:1, name:1}
 //     {name:0}
 // )
 
+#------------------- Using $and to use two or more searching parameters
 db.users.find({
     $and:[
         {rating:2},
         {gender:'female'}
     ]
 })
+
+#------------------- Using $or to use either of the searching parameters
 
 db.users.find({
     $or:[
@@ -26,53 +33,122 @@ db.users.find({
     ]
 })
 
+#------------------- Searching for a range/array of values (any of the included)
+
 db.users.find({
     age:{
         $in:[12, 25,33,48,16,18]
     }
 })
+
+#------------------- Searching for a range/array of values (not equal to the included)
+
 db.users.find({
     age:{
         $nin:[12, 25,33,48,16,18]
     }
 })
 
+#------------------- Searching via $gt (greater then) to find value bigger then value
+
 db.users.find({
     rating:{$gt:2}
 })
+
+#------------------- Searching via $gte (greater then/equal) to find value bigger or equal to the value
+
+
 db.users.find({
     rating:{$gte:2}
 })
 
+#------------------- Searching via $lt (less then) to find value that is smaller then value
+
+
 db.users.find({
     rating:{$lt:2}
 })
+
+#------------------- Searching via $lte (less then/equal) to find value that is smaller or equal to the value
+
+
 db.users.find({
     rating:{$lte:2}
 })
+
+#------------------- Searching via $ne (not equal) to find a value that is not equal to the value
+
 
 db.users.find({
     rating:{$ne:3}
 })
 
+#------------------- Searching via $eq (equal) to find a value that is equal to the value
+
 db.users.find({
     rating:{$eq:3}
 })
 
+--- OR ---
+
 db.users.find({rating:3})
 
+
+
+#----------------------------- REGULAR EXPRESSIONS TO FIND INFO -----------------------
+
+
+
+# --------------------------- Searching for certain name
 db.users.find({name:'Kira'})
 
+# --------------------------- Using regular expressions to find data ---
+
+#--------------------------- Find name that starts with "a" + i = upper and lower case doesn't matter
+
 db.users.find({name:/^a/i})
+
+#--------------------------- Find name that ends with "a" + i = the same as above
+
 db.users.find({name:/a$/i})
+
+#--------------------------- Find name where "t" is the 3rd letter + i = the same as above
+
 db.users.find({name:/.{2}t/i})
+
+#--------------------------- Find name that starts with "k" and ends with "a" + i = the same as above
+
 db.users.find({name:/^k.*a$/i})
+
+#--------------------------- Find name that has letter "v" anywhere in it + i = the same as above
+
 db.users.find({name:/v/i})
 
+
+
+#---------------------------------- SORTING -----------------------
+
+
+
+#-------------------------------- Sorting by "rating" in ascending order
+
 db.users.find().sort({rating:1})
+
+#-------------------------------- Sorting by "rating" in descending order
+
 db.users.find().sort({rating:-1})
+
+#-------------------------------- Sorting by "rating" AND "name" in descending order | ADDITIONALLY adding limit and offset/skip
+
 db.users.find().sort({rating:-1, name:-1}).limit(2).skip(4)
 
+
+
+#---------------------------------- UPDATE -----------------------
+
+
+
+#----------------  Updating rating for a certain user select via "id"
 
 db.users.find()
 
@@ -81,10 +157,14 @@ db.users.updateOne(
     {$set:{rating2:8}}
 )
 
+#----------------  Updating rating for a certain user, deleting "rating" key via "$unset" where "1" = true
+
 db.users.updateOne(
     {_id:ObjectId('66e8610553f9506ecef59b3d')},
     {$unset:{rating:1}}
 )
+
+#---------------- Updating MANY (.updateMany) users via selecting all "male", setting their gender = "animal"
 
 db.users.updateMany(
     {gender:'male'},
