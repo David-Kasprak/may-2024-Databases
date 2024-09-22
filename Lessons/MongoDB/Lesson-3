@@ -1,0 +1,139 @@
+db.students.find()
+
+#——————————— Update/increase/decrease value in a data (selecting item via "id", then using $inc to increase/decrease value)
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$inc:{class:-2}}
+)
+
+
+
+db.students.find({lessons:'english'})
+
+#———————————————————— Using $all to find certain objects in array
+
+db.students.find({lessons:{$all:['english', 'geology']}})
+
+#———————————————————— Find certain object in array with certain index
+
+db.students.find({'lessons.1':'mathematics'})
+
+#——————————————- Using .findOne to find data and display "name" only
+
+db.students.findOne({'lessons.1':'mathematics'}).name
+
+#—————————————— Using .count to count the number of results for this .find
+
+db.students.find({'lessons.1':'mathematics'}).count()
+
+#—————————————————— Find all data, and display only 2 array objects via $slice
+
+db.students.find({}, {lessons:{$slice:2}})
+
+#—————————————————  Using $size to find data where "lessons" array has only 2 objects
+
+db.students.find({lessons:{$size:2}})
+
+#-------------------------------------- Adding/pushing new object into array
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$push:{lessons:'css'}}
+)
+
+#-------------------------------------- Adding/pushing new array into array
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$push:{lessons:['java', 'python']}}
+)
+
+#------------------------------ Using $each to push/add new array where object will be separate
+
+db.students.find()
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$push:{lessons:{$each:['java', 'python']}}}
+)
+
+#-------------------------------------- Using $pull to delete 'java' object with index '2'
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$pull:{'lessons.2':'java'}}
+)
+
+#-------------------------------------- Using
+$pull to delete array with 'python' object in it
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$pull:{'lessons':["python"]}}
+)
+
+#-------------------------------------- Using $unset to turn the object with index '0' in 'lessons' array into 'null'
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$unset:{'lessons.0':1}}
+)
+
+#-------------------------------------- After that, using $pull to delete all the 'null' objects in 'lessons' array
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$pull:{'lessons':null}}
+)
+
+#-------------------------------------- Using $pop to delete a first/last object in array 'lessons' (1 - is the last object)
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$pop:{'lessons':1}}
+)
+
+#-------------------------------------- Using $pop to delete a first/last object in array 'lessons' (-1 is the first object)
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$pop:{'lessons':-1}}
+)
+
+#-------------------------------------- $push allows us to add/push new object/element even if it already exists there (alternative option below)
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$push:{lessons:{$each:['java', 'python']}}}
+)
+db.students.find()
+
+#-------------------------------------- Using $addToSet to add new object, but only if it doesn't exist there already
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$addToSet:{lessons:'css'}}
+)
+#-------------------------------------- Using $addToSet to add new object only if they don't exist there already + using $each to add more than 1 object
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$addToSet:{lessons:{$each:['java', 'python', 'mongo', 'html']}}}
+)
+
+#--------------------------------------- Using $set to (either create a new key/object if it's not there yet, or rewrite/replace values in the existing key/array/object), in this case we are replacing
+
+db.students.updateOne(
+    {_id:ObjectId('66eb00b9fce4ca69f197ae98')},
+    {$set:{lessons:[1,2,3,4]}}
+)
+
+#--------------------------------------- Find all parents who doesn't have any profession, and make their profession 'doctor' – checking if parents exist, then where parents profession is 'null', set/add 'doctor' profession to a certain index which is now a variable .$[item], then use 'arrayFilters' to check every object in 'profession' array and find the null ones, and assign an index to those null, so that it can be used in .$[item]
+
+db.students.updateMany(
+    {parents:{$exists:1}, "parents.profession":null},
+    {$set:{'parents.$[item].profession':'doctor'}},
+    {'arrayFilters':[{'item.profession':null}]}
+)
+
+db.students.find({parents:{$exists:1}, 'parents.profession':null})
