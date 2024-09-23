@@ -1,0 +1,160 @@
+use may2024;
+
+db.students.find();
+db.teacher.find();
+
+1) Найти всех детей у которых средняя оценка 4.2
+
+db.students.find({
+    avgScore:4.2
+});
+
+2) Найти всех детей с 1 класса
+
+db.students.find({
+    class:1
+});
+
+3) Найти всех детей, которые изучают физику
+
+db.students.find({
+    lessons:'physics'
+});
+
+// ----------------------------- Joined 'students' to 'teacher' table
+// db.students.aggregate([
+//     {
+//         $lookup:{
+//             from:'teacher',
+//             localField:'class',
+//             foreignField:'class_curator',
+//             as:'teacher'
+//         }
+//     }
+// ])
+// ----------------------------------------------------------------------
+
+4) Найти всех детей, родители которых ученые  ( scientist )
+
+db.students.find({
+    "parents.profession":'scientist'
+});
+
+5) Найти всех детей у которых средняя оценка больше 4
+
+db.students.find({
+    avgScore:{$gt:4}
+});
+
+6) Найти лучшего ученика
+
+db.students.find().sort({avgScore:-1}).limit(1);
+
+7) Найти худшего ученика
+
+db.students.find().sort({avgScore:1}).limit(1);
+
+8) Найти топ 3 ученика
+
+db.students.find().sort({avgScore:-1}).limit(3);
+
+9) Найти средний бал по школе
+
+db.students.aggregate([
+    {
+        $group:{
+            _id: null,
+            TotalAvgScoreOfSchool: {$avg:'$avgScore'}
+        }
+    }
+]);
+
+10) Найти средний бал учеников которые изучают математику или физику
+
+db.students.aggregate([
+    {
+        $match:{
+            $or:[
+                {lessons:'mathematics'},
+                {lessons:'physics'}
+            ]
+        }
+    },
+    {
+        $group:{
+            _id: null,
+            AvgScoreOfMathAndPhysics: {$avg:'$avgScore'}
+        }
+    }
+]);
+
+11) Найти средний бал 2 класса
+
+db.students.aggregate([
+    {
+        $match:{
+            class:2
+        }
+    },
+    {
+        $group:{
+            _id: null,
+            AvgScoreOfClass2: {$avg:'$avgScore'}
+        }
+    }
+]);
+
+12) Найти детей с не полной семьёй
+
+db.students.find({
+    parents:{$size:1}
+});
+
+13) Найти безработных родителей
+
+db.students.find({
+    "parents.profession":{$exists:0}
+});
+
+Вигнать детей со средним бал меньше 2.5
+
+db.students.deleteMany({
+    avgScore:{$lt:2.5}
+});
+
+15) Детям у которых есть родители с профессией учитель ( teacher ) поставить средний бал 5
+
+db.students.updateMany(
+    {"parents.profession":'teacher'},
+    {$set:{avgScore:5}}
+);
+
+16) Найти детей которые учаться в начальной школе (до 5 класса) и изучают физику
+
+db.students.find({
+    $and:[
+        {class:{$lt:5}},
+        {lessons:'physics'}
+    ]
+});
+
+17) Найти самый успешный класс
+
+db.students.find()
+
+db.students.aggregate([
+    {
+        $group:{
+            _id:'$class',
+            AvgClassScore:{$avg:'$avgScore'}
+        }
+
+
+    },
+    {
+        $sort:{AvgClassScore:-1},
+    },
+    {
+        $limit:1
+    }
+]);
